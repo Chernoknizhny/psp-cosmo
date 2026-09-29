@@ -1,0 +1,16 @@
+psp:
+  B: 2.591
+  w: 0.0367
+  fixed: true
+  fitted:
+    - H0
+    - Om
+
+lcdm:
+  w: -1.0
+  fixed: true
+
+priors:
+  planck_Om:
+    mean: 0.315
+    sigma: 0.007
