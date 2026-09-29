@@ -1,88 +1,54 @@
-
 # psp-cosmo
 
 **Cosmology: PSP (Phase State Parameter) model vs ΛCDM.**  
 Implementation, χ²/BIC tests, and out-of-sample predictions on Pantheon+, DESI, CMB data.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXX)
+
 ## Key idea
 
-- **PSP model:** parameters $B = 2.591$, $w = 0.0367$ are fixed from torus geometry (no fitting). Only $H_0$ and $\Omega_m$ are fitted.
-- **Test:** out-of-sample prediction (e.g., Pantheon+ → DESI DR1) with explicit $\chi^2$ and $\Delta\text{BIC}$.
-- **Goal:** reproducible, falsifiable comparisons with ΛCDM.
+The goal of this repository is to provide a **reproducible, falsifiable comparison** between the PSP model and the standard ΛCDM cosmology.
 
-## Current results (example — replace with your latest numbers)
+- **PSP model:** Parameters $B = 2.591$ and $w = 0.0367$ are **fixed** from torus geometry (no fitting to data). Only $H_0$ and $\Omega_m$ are fitted.
+- **Test strategy:** **Out-of-sample prediction**. The model is trained on Pantheon+ SNe data, and the $\chi^2$ is evaluated on independent datasets (DESI DR1, CMB) that were not used in the training.
+- **Falsifiability:** Predictions for DESI Y5 (2027–2028) and CMB-S4 are explicitly stated in the documentation. If $w = -1$ is confirmed with precision better than 0.5%, the PSP model is falsified in this channel.
 
-| Metric | PSP | ΛCDM | Notes |
-|--------|-----|------|-------|
-| $\chi^2$ (Pantheon+) | 1234.5 | 1236.7 | Example values |
-| $\chi^2$ (DESI DR1, out-of-sample) | 3.75 | 8.56 | PSP trained on Pantheon+, tested on unseen DESI |
-| $\Delta\text{BIC}$ | −5.2 | — | Negative ΔBIC indicates stronger support for PSP |
+## Current Results
 
-> **Important:** The PSP parameters $B$ and $w$ are not fitted to these data; they are derived from the torus geometry. This is a key difference from standard dynamical dark energy parametrizations.
+### 1. Out-of-sample test on DESI DR1 H(z)
+The model was trained on Pantheon+ and tested on 5 DESI DR1 points without additional fitting.
 
-## Quick start
+| Model | $\chi^2$ (DESI DR1) | Notes |
+|-------|---------------------|-------|
+| **PSP** | **3.77** | Trained on Pantheon+, tested on unseen DESI data |
+| ΛCDM | 8.56 | Standard model with $w=-1$ |
+| **Difference** | **$\Delta\chi^2 = -4.79$** | PSP provides a significantly better fit to these out-of-sample data |
 
+> **Note:** The improvement in $\chi^2$ is achieved **without** fitting $B$ or $w$. These parameters are fixed by the geometric derivation.
+
+### 2. α_H Scan (SNe+BAO+CMB, zHD)
+This repository reproduces the scan of the parameter $\alpha_H$ for different normalization factors (`norm`).
+
+![Alpha_H Scan](docs/alpha_H_scan.png)
+
+*Figure: $\Delta\chi^2$ vs $\alpha_H$ for three normalization levels (norm=0.5, 1.0, 2.5). Data: SNe+BAO+CMB, zHD.*
+
+- **Key observation:** For `norm=0.5`, the curve shows a strong linear growth in $\Delta\chi^2$, indicating tension with the data at high $\alpha_H$.
+- **Best fit:** The minimum $\Delta\chi^2$ occurs near $\alpha_H \approx 0.0$ for all normalization levels, consistent with the geometric derivation.
+
+*The script to reproduce this plot is available in `scripts/plot_alpha_H_scan.py`.*
+
+## How to Reproduce
+
+### Prerequisites
+- Python 3.8+
+- DVC (for data management)
+
+### Installation
 ```bash
-git clone https://github.com/username/psp-cosmo.git
+git clone https://github.com/Chernoknizhny/psp-cosmo.git
 cd psp-cosmo
 python -m venv venv
 # Windows: venv\Scripts\activate
 # macOS/Linux: source venv/bin/activate
 pip install -r requirements.txt
-Usage examples
-Compute χ² on DESI DR1 (out-of-sample test):
-bash
-python scripts/compute_chi2_desi.py
-Plot Δχ² vs α_H scan:
-bash
-python scripts/plot_alpha_H_scan.py
-Run full retro-forecast workflow:
-bash
-python scripts/retro_forecast.py
-Structure
-src/ — core cosmology and PSP/ΛCDM models.
-scripts/ — ready-to-run scripts (χ² calculation, plots, forecasts).
-notebooks/ — exploratory analysis.
-config/ — fixed parameters (
-B
-B, 
-w
-w) and priors.
-data/ — metadata; large files via DVC.
-results/ — plots, tables, logs.
-Data
-Large data files (Pantheon+ covariance matrix, DESI points) are managed with DVC.
-After cloning:
-
-bash
-dvc pull
-How to cite
-If you use this code or results in your work, please cite:
-
-The repository (Zenodo DOI will be available after linking with Zenodo).
-The underlying model papers (Zenodo links):
-License
-MIT.
-
-text
-
----
-
-### Что важно сделать прямо сейчас
-
-1. **Подставь реальные числа в таблицу «Current results».** Это самое сильное место для внешнего читателя. Если у тебя сейчас $\chi^2_{\text{PSP}} = 3.75$ на DESI DR1, а у ΛCDM = 8.56 — оставь эти цифры: они сразу показывают преимущество PSP в тесте на новых данных.
-2. **Замени `username` в команде `git clone`** на свой реальный username на GitHub.
-3. **В секции «How to cite» оставь ссылки на Zenodo** — это сразу связывает код с публикациями и снимает вопрос «откуда взялась модель».
-
----
-
-### Про твой график (Δχ² vs α_H)
-
-В секции «Usage examples» я добавил `plot_alpha_H_scan.py`. Если у тебя скрипт ещё не готов, я могу прямо сейчас написать его скелет: он будет брать CSV с колонками `alpha_H`, `norm`, `delta_chi2` и строить три линии (как на твоём изображении), сохраняя в `results/plots/`.
-
-Скажи, какой вариант тебе важнее сейчас:
-- «Дай скелет скрипта `plot_alpha_H_scan.py` под этот график»
-- «Дай скелет `compute_chi2_desi.py` с формулой $\chi^2 = \sum \frac{(H_{\text{model}} - H_{\text{data}})^2}{\sigma^2}$»
-- «Сначала закончим с README и структурой, код потом»
-
-Что делаем?
