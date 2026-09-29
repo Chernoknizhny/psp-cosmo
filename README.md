@@ -52,35 +52,10 @@ Compute χ²: python scripts/compute_chi2_desi.py
 Reproduce Plot: python scripts/plot_alpha_H_scan.py
 Full workflow: python scripts/retro_forecast.py
 Structure
-src/psp_model.py: PSP metric and 
-H
-(
-z
-)
-H(z) calculation.
-src/lcdm_model.py: ΛCDM 
-H
-(
-z
-)
-H(z) for comparison.
-src/stats.py: 
-χ
-2
-χ 
-2
- , BIC, 
-Δ
-χ
-2
-Δχ 
-2
-  functions.
-config/params.yaml: Fixed parameters (
-B
-,
-w
-B,w) and priors.
+src/psp_model.py: PSP metric and H(z) calculation.
+src/lcdm_model.py: ΛCDM H(z) for comparison.
+src/stats.py: χ2, BIC, Δχ2 functions.
+config/params.yaml: Fixed parameters (B,w) and priors.
 scripts/: Ready-to-run scripts.
 data/: Metadata; raw data via DVC.
 results/: Output plots and tables.
